@@ -81,6 +81,13 @@ function loadReadingResult() {
   }
 }
 
+// 番号をローマ数字にする（0 は "0"、1〜21 は I〜XXI）。カードの表に出す
+function toRoman(n) {
+  const table = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
+    "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI"];
+  return table[n];
+}
+
 // 単語の配列から、RARITY の重みに比例して1つ選ぶ。選んだ単語と、その選ばれる確率を返す
 function pickWord(list) {
   const total = list.reduce((sum, x) => sum + RARITY[x.r], 0);

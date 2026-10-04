@@ -11,11 +11,38 @@
     <a class="btn home-btn" href="index.html">ホームへ</a>
     <h2>今日の称号</h2>
 
-    <!-- 伏せたカード：裏面は文字と金枠だけ。ボタンで1枚ずつ表にする -->
-    <div class="cards">
-      <div class="card"><span class="slot">過去</span><span class="card-name">？</span><span class="reverse-note"></span><span class="card-word hidden"></span><span class="card-rank hidden"></span></div>
-      <div class="card"><span class="slot">現在</span><span class="card-name">？</span><span class="reverse-note"></span><span class="card-word hidden"></span><span class="card-rank hidden"></span></div>
-      <div class="card"><span class="slot">未来</span><span class="card-name">？</span><span class="reverse-note"></span><span class="card-word hidden"></span><span class="card-rank hidden"></span></div>
+    <!-- 伏せたカード：最初は裏面（.back）。ボタンで1枚ずつ表にする -->
+    <div class="cards tarot">
+      <div class="card">
+        <div class="card-face back">
+          <span class="card-no"></span>
+          <span class="card-name"></span>
+        </div>
+        <span class="slot">過去</span>
+        <span class="reverse-note"></span>
+        <span class="card-word hidden"></span>
+        <span class="card-rank hidden"></span>
+      </div>
+      <div class="card">
+        <div class="card-face back">
+          <span class="card-no"></span>
+          <span class="card-name"></span>
+        </div>
+        <span class="slot">現在</span>
+        <span class="reverse-note"></span>
+        <span class="card-word hidden"></span>
+        <span class="card-rank hidden"></span>
+      </div>
+      <div class="card">
+        <div class="card-face back">
+          <span class="card-no"></span>
+          <span class="card-name"></span>
+        </div>
+        <span class="slot">未来</span>
+        <span class="reverse-note"></span>
+        <span class="card-word hidden"></span>
+        <span class="card-rank hidden"></span>
+      </div>
     </div>
     <button id="draw" type="button">過去を引く</button>
     <p id="error"></p>
@@ -53,6 +80,8 @@
     const labels = ["過去を引く", "現在を引く", "未来を引く", "結果を見る"];
     const names = document.querySelectorAll(".card-name");
     const notes = document.querySelectorAll(".reverse-note");
+    const cardNos = document.querySelectorAll(".card-no");
+    const faces = document.querySelectorAll(".card-face");
     const wordEls = document.querySelectorAll(".card-word");
     // 単語は最初から入れておき、見えないまま高さだけ確保する（めくっても枠の高さが変わらない）
     const rankEls = document.querySelectorAll(".card-rank");
@@ -76,6 +105,10 @@
         // 次のカードをめくる（カード名と、逆位置のときだけ「逆位置」）
         names[opened].textContent = picked[opened].card.name;
         notes[opened].textContent = picked[opened].reversed ? "逆位置" : "";
+        // ローマ数字を入れ、逆位置ならカード面を回転させる
+        cardNos[opened].textContent = toRoman(picked[opened].card.no);
+        faces[opened].classList.remove("back"); // 裏面から表にする
+        if (picked[opened].reversed) faces[opened].classList.add("reversed");
         wordEls[opened].classList.remove("hidden");
         rankEls[opened].classList.remove("hidden");
         opened++;

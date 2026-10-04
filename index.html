@@ -7,13 +7,19 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
+  <main class="home">
+    <!-- 飾り：裏向きのカード3枚を扇形に重ねる（3枚引きと同じ裏面の部品） -->
+    <div class="cards tarot home-deco" aria-hidden="true">
+      <div class="card"><div class="card-face back"></div></div>
+      <div class="card"><div class="card-face back"></div></div>
+      <div class="card"><div class="card-face back"></div></div>
+    </div>
     <h1>なんかタロットっぽいやつ</h1>
 
     <!-- 名前入力欄（入力のたびに保存し、全ページで共有。空欄なら「本人ちゃん」） -->
     <label for="name">お名前</label>
     <input id="name" type="text" placeholder="本人ちゃん">
-    <div class="menu">
+    <div class="menu home-menu">
       <a class="btn" href="title.html">今日の称号</a>
       <a class="btn" href="reading.html">タロット占い</a>
       <a class="btn" href="list.html">カード説明の一覧</a>

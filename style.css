@@ -1,20 +1,21 @@
 /* 暗い背景＋金色の文字。厳かな見た目 */
 :root {
-  --bg: #12101a;
-  --gold: #d4af37;
-  --gold-light: #f2d36b;
+  --bg: #f4f6fb;
+  --gold: #1a2bd6;
+  --gold-light: #4a5be8;
 }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--gold);
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-family: "Yu Gothic", "Hiragino Sans", "Meiryo", sans-serif;
   text-align: center;
+  line-height: 1.8;
 }
 
 main {
-  max-width: 640px;
+  max-width: 720px;
   margin: 0 auto;
   padding: 24px 16px;
 }
@@ -24,7 +25,8 @@ input, button {
   color: var(--gold);
   background: transparent;
   border: 1px solid var(--gold);
-  padding: 8px 12px;
+  padding: 10px 18px;
+  box-shadow: 0.2rem 0.2rem 0 var(--gold);
 }
 
 button { cursor: pointer; }
@@ -34,8 +36,9 @@ button { cursor: pointer; }
   font: inherit;
   color: var(--gold);
   border: 1px solid var(--gold);
-  padding: 8px 12px;
+  padding: 10px 18px;
   text-decoration: none;
+  box-shadow: 0.2rem 0.2rem 0 var(--gold);
 }
 
 /* ホーム画面のボタンは縦に並べる */
@@ -108,7 +111,7 @@ button { cursor: pointer; }
 /* カードの意味の文章：左揃えで折り返し、行間をあけて読みやすく */
 .meaning {
   text-align: left;
-  line-height: 1.8;
+  line-height: 2;
 }
 
 .footer { margin-top: 32px; }
@@ -177,7 +180,7 @@ button { cursor: pointer; }
 }
 
 /* ランク名の色。先に代わりの単色を書き、グラデーションに対応しているブラウザだけ上書きする */
-.rank-sugoi { color: #e6eaee; }
+.rank-sugoi { color: #7a8190; }
 .rank-kanari { color: #e8c547; }
 .rank-sugoisugiru { color: #b07ad8; }
 .rank-yabai { color: #e8742c; }
@@ -215,7 +218,8 @@ button { cursor: pointer; }
 }
 
 .heading {
-  font-size: 0.9rem;
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
   margin-bottom: 0;
 }
 
@@ -224,7 +228,7 @@ button { cursor: pointer; }
   font-size: 2.7rem;
   font-weight: bold;
   text-align: center;
-  color: #f5d76e;
+  color: var(--gold-light);
   margin-top: 0.3rem;
 }
 
@@ -245,3 +249,309 @@ button { cursor: pointer; }
 #reversed-line, #rank-line { font-size: 1rem; }
 
 #prob { font-size: 0.9rem; }
+
+/* タロットカードの部品（カード枠） */
+.tarot-card {
+  width: 12rem;
+  aspect-ratio: 2 / 3;
+  position: relative;
+  border-radius: 0.6rem;
+  background: #141a3d;
+  border: 2px solid #c9a227;
+  box-sizing: border-box;
+  color: #c9a227;
+  box-shadow: 0.25rem 0.25rem 0 rgba(201, 162, 39, 0.35);
+}
+
+/* カード内側の細い線 */
+.tarot-card::before {
+  content: "";
+  position: absolute;
+  inset: 0.45rem;
+  border: 1px solid #c9a227;
+  border-radius: 0.3rem;
+  pointer-events: none;
+}
+
+/* ローマ数字 */
+.tarot-card .card-no {
+  position: absolute;
+  top: 0.8rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+}
+
+/* 名前（縦書き）。font-family は body のまま。既存の .card-name の margin-top は打ち消す */
+.tarot-card .card-name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  writing-mode: vertical-rl;
+  font-size: 1.4rem;
+  letter-spacing: 0.3em;
+  margin: 0;
+}
+
+/* 裏面：文字は置かず、中央に丸だけ出す */
+.tarot-card.back::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid #c9a227;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+/* 逆位置 */
+.tarot-card.reversed {
+  transform: rotate(180deg);
+}
+
+/* 角かっこ風の飾り：今の枠線は残し、外側に四隅の線だけ足す（input は疑似要素が使えないので対象外） */
+.btn,
+button,
+.card,
+.word-box {
+  position: relative;
+}
+
+.card::before,
+.word-box::before {
+  content: "";
+  position: absolute;
+  inset: -0.4rem;
+  pointer-events: none;
+  /* 各隅に、横線（長さ0.8rem・太さ2px）と縦線を1本ずつ */
+  background-image:
+    linear-gradient(var(--gold), var(--gold)),
+    linear-gradient(var(--gold), var(--gold)),
+    linear-gradient(var(--gold), var(--gold)),
+    linear-gradient(var(--gold), var(--gold)),
+    linear-gradient(var(--gold), var(--gold)),
+    linear-gradient(var(--gold), var(--gold)),
+    linear-gradient(var(--gold), var(--gold)),
+    linear-gradient(var(--gold), var(--gold));
+  background-repeat: no-repeat;
+  background-position:
+    left top, left top,
+    right top, right top,
+    left bottom, left bottom,
+    right bottom, right bottom;
+  background-size:
+    0.8rem 2px, 2px 0.8rem,
+    0.8rem 2px, 2px 0.8rem,
+    0.8rem 2px, 2px 0.8rem,
+    0.8rem 2px, 2px 0.8rem;
+}
+
+.card::before,
+.word-box::before {
+  inset: -0.5rem;
+}
+
+/* title.html のカードを tarot 風にする（.cards.tarot の中だけ。既存のルールは上書きしない） */
+.cards.tarot .card {
+  min-width: 0; /* カード面の幅が、枠からはみ出さないようにする */
+  border: none; /* 外側の藍の枠は消し、カード面だけを見せる */
+  padding: 0;
+}
+
+/* 1枚引き：カードが画面いっぱいに広がらないよう、3枚引きの1枚と同じくらいの幅にする */
+.cards.tarot.single .card {
+  flex: 0 1 13rem;
+}
+
+/* ホームの飾り：小さな裏向きカード3枚を、扇形に少し重ねる */
+.cards.tarot.home-deco {
+  gap: 0;
+  margin: 8px 0 4px;
+}
+
+.cards.tarot.home-deco .card {
+  flex: 0 0 5.5rem;
+}
+
+.cards.tarot.home-deco .card + .card {
+  margin-left: -1.4rem;
+}
+
+.cards.tarot.home-deco .card:nth-child(1) { transform: rotate(-12deg) translateY(0.6rem); }
+.cards.tarot.home-deco .card:nth-child(2) { z-index: 1; }
+.cards.tarot.home-deco .card:nth-child(3) { transform: rotate(12deg) translateY(0.6rem); }
+
+/* ホームのボタン：横いっぱいにせず、中央に少し絞る */
+.home-menu {
+  max-width: 29rem;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 24px; /* ボタンの間隔（影が重ならないよう、ゆったり） */
+}
+
+/* ホームのボタン：文字と余白を1.3倍に */
+.home-menu .btn {
+  font-size: 1.3rem;
+  padding: 13px 23px;
+}
+
+/* ホーム：広い画面では、左右の空きに薄い線画を置く（左＝三日月と星座、右＝太陽と星座）。
+   画面の構成は変えない。画像ファイルは使わず、SVG を CSS の中に書く */
+@media (min-width: 1200px) {
+  main.home::before,
+  main.home::after {
+    content: "";
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    height: min(600px, 80vh);
+    aspect-ratio: 1 / 3;
+    background: no-repeat center / contain;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  main.home::before {
+    left: max(2vw, calc(50vw - 600px));
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 600'>\
+<path transform='translate(100 120) scale(1.7) translate(-100 -120)' d='M120 80 A40 40 0 1 0 120 160 A50 50 0 0 1 120 80 Z' fill='none' stroke='%23c9a227' stroke-width='0.9'/>\
+<polyline points='60,250 140,320 80,420 150,500' fill='none' stroke='%23c9a227' stroke-width='0.8' stroke-dasharray='2 4'/>\
+<g fill='%23c9a227'>\
+<path transform='translate(60 250) scale(1.8) translate(-60 -250)' d='M60 238 L63 247 L72 250 L63 253 L60 262 L57 253 L48 250 L57 247 Z'/>\
+<path transform='translate(140 320) scale(1.8) translate(-140 -320)' d='M140 312 L142 318 L148 320 L142 322 L140 328 L138 322 L132 320 L138 318 Z'/>\
+<path transform='translate(80 420) scale(1.8) translate(-80 -420)' d='M80 410 L82.5 417.5 L90 420 L82.5 422.5 L80 430 L77.5 422.5 L70 420 L77.5 417.5 Z'/>\
+<path transform='translate(150 500) scale(1.8) translate(-150 -500)' d='M150 494 L151.5 498.5 L156 500 L151.5 501.5 L150 506 L148.5 501.5 L144 500 L148.5 498.5 Z'/>\
+</g>\
+<g fill='%231a2bd6'>\
+<circle cx='30' cy='180' r='2.2'/><circle cx='170' cy='200' r='2.2'/><circle cx='110' cy='380' r='2.2'/>\
+<circle cx='40' cy='520' r='2.2'/><circle cx='175' cy='420' r='2.2'/><circle cx='120' cy='575' r='2.2'/>\
+</g></svg>");
+  }
+
+  main.home::after {
+    right: max(2vw, calc(50vw - 600px));
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 600'>\
+<g transform='translate(100 140) scale(1.6) translate(-100 -140)'><circle cx='100' cy='140' r='36' fill='none' stroke='%23c9a227' stroke-width='12' stroke-dasharray='1 17.85'/>\
+<circle cx='100' cy='140' r='22' fill='none' stroke='%23c9a227' stroke-width='1'/>\
+<circle cx='100' cy='140' r='3' fill='%23c9a227'/></g>\
+<polyline points='50,280 150,350 70,460 140,540' fill='none' stroke='%23c9a227' stroke-width='0.8' stroke-dasharray='2 4'/>\
+<g fill='%23c9a227'>\
+<path transform='translate(50 280) scale(1.8) translate(-50 -280)' d='M50 270 L52.5 277.5 L60 280 L52.5 282.5 L50 290 L47.5 282.5 L40 280 L47.5 277.5 Z'/>\
+<path transform='translate(150 350) scale(1.8) translate(-150 -350)' d='M150 338 L153 347 L162 350 L153 353 L150 362 L147 353 L138 350 L147 347 Z'/>\
+<path transform='translate(70 460) scale(1.8) translate(-70 -460)' d='M70 452 L72 458 L78 460 L72 462 L70 468 L68 462 L62 460 L68 458 Z'/>\
+<path transform='translate(140 540) scale(1.8) translate(-140 -540)' d='M140 530 L142.5 537.5 L150 540 L142.5 542.5 L140 550 L137.5 542.5 L130 540 L137.5 537.5 Z'/>\
+</g>\
+<g fill='%231a2bd6'>\
+<circle cx='170' cy='230' r='2.2'/><circle cx='30' cy='380' r='2.2'/><circle cx='110' cy='410' r='2.2'/>\
+<circle cx='180' cy='470' r='2.2'/><circle cx='30' cy='560' r='2.2'/><circle cx='100' cy='585' r='2.2'/>\
+</g></svg>");
+  }
+}
+
+/* 藍の角かっこは消す */
+.cards.tarot .card::before {
+  content: none;
+}
+
+/* カード面 */
+.cards.tarot .card-face {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  background: linear-gradient(160deg, #1b2259, #141a3d 55%, #0e1336); /* B の夜空のカード */
+  border: 2px solid #c9a227;
+  border-radius: 0.6rem;
+  box-sizing: border-box;
+  color: #c9a227;
+  box-shadow: 0.25rem 0.25rem 0 rgba(201, 162, 39, 0.35);
+  container-type: inline-size; /* 文字の大きさをカードの幅に合わせる（cqw） */
+}
+
+/* 裏面：細かい金の格子柄と、中央に二重の円。数字と名前は見せない */
+.cards.tarot .card-face.back {
+  background:
+    repeating-linear-gradient(45deg, rgba(201, 162, 39, 0.14) 0 1px, transparent 1px 10px),
+    repeating-linear-gradient(-45deg, rgba(201, 162, 39, 0.14) 0 1px, transparent 1px 10px),
+    linear-gradient(160deg, #1b2259, #141a3d 55%, #0e1336);
+}
+
+.cards.tarot .card-face.back .card-no,
+.cards.tarot .card-face.back .card-name {
+  visibility: hidden;
+}
+
+.cards.tarot .card-face.back::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32cqw;
+  height: 32cqw;
+  border: 1px solid #c9a227;
+  border-radius: 50%;
+  outline: 1px solid #c9a227;
+  outline-offset: 4cqw;
+  background: #141a3d;
+}
+
+/* カード面の内側の細い線 */
+.cards.tarot .card-face::before {
+  position: absolute;
+  inset: 0.45rem;
+  border: 1px solid #c9a227;
+  border-radius: 0.3rem;
+  content: "";
+  pointer-events: none;
+}
+
+/* ローマ数字 */
+.cards.tarot .card-face .card-no {
+  position: absolute;
+  top: 0.8rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: min(1.6rem, 13cqw); /* 狭い画面ではカードの幅に合わせて小さくする */
+  font-weight: 700;
+  color: #e0b93a;
+  text-shadow: 0 0 0.4rem rgba(201, 162, 39, 0.5);
+  letter-spacing: 0.15em;
+}
+
+/* 名前（縦書き）。既存の .card-name の margin-top は打ち消す */
+.cards.tarot .card-face .card-name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: min(2.4rem, 19cqw); /* 狭い画面ではカードの幅に合わせて小さくする */
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  width: 80%;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.3;
+  color: #e0b93a;
+  text-shadow: 0 0 0.4rem rgba(201, 162, 39, 0.5);
+  margin: 0;
+}
+
+/* 逆位置：カード面ごと、中身も回転 */
+.cards.tarot .card-face.reversed {
+  transform: rotate(180deg);
+}
+
+/* カード面の下の文字：色は今のまま、上に余白 */
+.cards.tarot .card > .slot,
+.cards.tarot .card > .reverse-note,
+.cards.tarot .card > .card-word,
+.cards.tarot .card > .card-rank {
+  margin-top: 0.5rem;
+}

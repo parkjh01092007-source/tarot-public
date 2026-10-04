@@ -11,9 +11,15 @@
     <a class="btn home-btn" href="reading.html">戻る</a>
     <h2>タロット占い</h2>
 
-    <!-- 伏せた1枚：裏面は金枠と「？」だけ -->
-    <div class="cards">
-      <div class="card"><span class="card-name">？</span><span class="reverse-note"></span></div>
+    <!-- 伏せた1枚：最初は裏面（.back）。「引く」で表にする（3枚引きと同じカード） -->
+    <div class="cards tarot single">
+      <div class="card">
+        <div class="card-face back">
+          <span class="card-no"></span>
+          <span class="card-name"></span>
+        </div>
+        <span class="reverse-note"></span>
+      </div>
     </div>
     <button id="draw" type="button">引く</button>
     <p id="error"></p>
@@ -33,14 +39,18 @@
       const reversed = Math.random() < 0.5;
       const name = document.querySelector(".card-name");
       const note = document.querySelector(".reverse-note");
+      const face = document.querySelector(".card-face");
       const button = document.getElementById("draw");
       let opened = false;
 
       button.addEventListener("click", () => {
         if (!opened) {
-          // 引く：カード名と、逆位置のときだけ「逆位置」を見せる
+          // 引く：裏面から表にして、ローマ数字・カード名と、逆位置のときだけ「逆位置」を見せる
           name.textContent = card.name;
           note.textContent = reversed ? "逆位置" : "";
+          document.querySelector(".card-no").textContent = toRoman(card.no);
+          face.classList.remove("back");
+          if (reversed) face.classList.add("reversed");
           opened = true;
           button.textContent = "結果を見る";
         } else if (saveReadingResult({ no: card.no, reversed, theme })) {
