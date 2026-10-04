@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>タロット占い - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" href="index.html">ホームへ</a>
+
+    <h3 id="reading-heading"></h3>
+    <p id="reading-card"></p>
+    <p id="reading-text"></p>
+
+    <div class="menu">
+      <a class="btn" href="reading.html">もう一度引く</a>
+    </div>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const result = loadReadingResult();
+    if (!result) {
+      // 結果がないときは選択画面に戻す
+      location.replace("reading.html");
+    } else {
+      const card = CARDS.find(c => c.no === result.no);
+      const meaning = MEANINGS[result.theme][result.no];
+      document.getElementById("reading-heading").textContent = getName() + "さんの今日の1枚";
+      document.getElementById("reading-card").textContent =
+        card.name + "（" + (result.reversed ? "逆位置" : "正位置") + "）";
+      document.getElementById("reading-text").textContent =
+        result.reversed ? meaning.reversed : meaning.upright;
+    }
+  </script>
+</body>
+</html>

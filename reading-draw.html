@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>タロット占い - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" href="reading.html">戻る</a>
+    <h2>タロット占い</h2>
+
+    <!-- 伏せた1枚：裏面は金枠と「？」だけ -->
+    <div class="cards">
+      <div class="card"><span class="card-name">？</span><span class="reverse-note"></span></div>
+    </div>
+    <button id="draw" type="button">引く</button>
+    <p id="error"></p>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const theme = new URLSearchParams(location.search).get("theme");
+    if (!hasTheme(theme)) {
+      // テーマが無い・MEANINGS に無いときは選択画面に戻す
+      location.replace("reading.html");
+    } else {
+      // ページを開いたときに、22枚から1枚と向き（50%で逆位置）を決めておく
+      const card = CARDS[Math.floor(Math.random() * CARDS.length)];
+      const reversed = Math.random() < 0.5;
+      const name = document.querySelector(".card-name");
+      const note = document.querySelector(".reverse-note");
+      const button = document.getElementById("draw");
+      let opened = false;
+
+      button.addEventListener("click", () => {
+        if (!opened) {
+          // 引く：カード名と、逆位置のときだけ「逆位置」を見せる
+          name.textContent = card.name;
+          note.textContent = reversed ? "逆位置" : "";
+          opened = true;
+          button.textContent = "結果を見る";
+        } else if (saveReadingResult({ no: card.no, reversed, theme })) {
+          location.href = "reading-result.html";
+        } else {
+          document.getElementById("error").textContent = "結果を保存できませんでした。";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

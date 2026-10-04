@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>タロット占い - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" href="index.html">ホームへ</a>
+    <h2>タロット占い</h2>
+
+    <!-- テーマ選択：MEANINGS にあるテーマだけ進める。無いテーマは「準備中」で押せない -->
+    <div class="menu" id="themes"></div>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const THEMES = [
+      { key: "general", label: "総合" },
+      { key: "love", label: "恋愛" },
+      { key: "work", label: "仕事" },
+    ];
+    const box = document.getElementById("themes");
+    THEMES.forEach(t => {
+      if (hasTheme(t.key)) {
+        const link = document.createElement("a");
+        link.className = "btn";
+        link.href = "reading-draw.html?theme=" + t.key;
+        link.textContent = t.label;
+        box.append(link);
+      } else {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.disabled = true;
+        btn.textContent = t.label + "（準備中）";
+        box.append(btn);
+      }
+    });
+  </script>
+</body>
+</html>

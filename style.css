@@ -1,0 +1,247 @@
+/* 暗い背景＋金色の文字。厳かな見た目 */
+:root {
+  --bg: #12101a;
+  --gold: #d4af37;
+  --gold-light: #f2d36b;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--gold);
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  text-align: center;
+}
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+input, button {
+  font: inherit;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid var(--gold);
+  padding: 8px 12px;
+}
+
+button { cursor: pointer; }
+
+/* ボタンの見た目のリンク（ページ移動用） */
+.btn {
+  font: inherit;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 8px 12px;
+  text-decoration: none;
+}
+
+/* ホーム画面のボタンは縦に並べる */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* 各画面の左上に置く「ホームへ」 */
+.home-btn {
+  display: block;
+  width: fit-content;
+  margin: 0 auto 16px 0;
+}
+
+/* 占いの文章：左揃えで折り返し、行間をあけて読みやすく */
+#reading-text {
+  text-align: left;
+  line-height: 1.8;
+}
+
+/* カード説明の一覧：ボタンは折り返して並べ、説明は左揃え */
+#list-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* カードの称号の単語：過去・現在・未来を金色の枠で囲み、縦に並べる */
+.word-box {
+  border: 1px solid var(--gold);
+  padding: 8px 12px;
+  margin: 16px 0;
+}
+
+/* 単語・凡例：文字の幅にグラデーションが収まるよう fit-content で中央に置く。細い幅では折り返す */
+.word-item,
+.legend-item {
+  width: fit-content;
+  max-width: 100%;
+  margin: 8px auto;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.word-item {
+  font-size: 1.2rem;
+  text-wrap: balance;
+}
+
+#legend { margin-top: 24px; }
+
+/* テーマ切り替えのボタン：横に並べ、選んでいるものは金色で塗る */
+.theme-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.btn.selected {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+/* カードの意味の文章：左揃えで折り返し、行間をあけて読みやすく */
+.meaning {
+  text-align: left;
+  line-height: 1.8;
+}
+
+.footer { margin-top: 32px; }
+
+.cards {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+/* 文字だけのカード */
+.card {
+  flex: 1;
+  border: 2px solid var(--gold);
+  padding: 24px 8px;
+}
+
+.slot {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--gold-light);
+}
+
+.card-name {
+  display: block;
+  font-size: 1.4rem;
+  margin-top: 8px;
+}
+
+/* 枠ごとの単語：カード名より大きく太字。伏せている間は見えないが高さは確保する */
+.card-word {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: bold;
+  line-height: 1.4;
+  margin-top: 8px;
+  text-wrap: balance; /* 複数行のとき、最後の行に1文字だけ残らないようにする */
+}
+
+/* 単語の下のランク名：1.15rem の太字。グラデーションが文字の幅に収まるよう中央に置く */
+.card-rank {
+  display: block;
+  width: fit-content; /* グラデーションが文字の幅に収まるようにする */
+  margin: 0 auto;
+  font-size: 1.15rem;
+  font-weight: bold;
+  min-height: 1.2em;
+}
+
+/* ランクの一言の中のランク名：周りの1.3倍・太字（色は下のランク別クラス） */
+.rank-name {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+/* ランク名の文字：より太く、斜めに（ランク名のクラスだけ）。
+   斜めにすると文字の右上が箱の外へはみ出し、グラデーションの背景が届かず切れて見えるので、右に余白を足す */
+.rank-sugoi,
+.rank-kanari,
+.rank-sugoisugiru,
+.rank-yabai {
+  font-weight: 800;
+  font-style: italic;
+  padding-right: 0.2em;
+}
+
+/* ランク名の色。先に代わりの単色を書き、グラデーションに対応しているブラウザだけ上書きする */
+.rank-sugoi { color: #e6eaee; }
+.rank-kanari { color: #e8c547; }
+.rank-sugoisugiru { color: #b07ad8; }
+.rank-yabai { color: #e8742c; }
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .rank-kanari,
+  .rank-sugoisugiru,
+  .rank-yabai {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .rank-kanari { background-image: linear-gradient(90deg, #d4af37, #fff176, #d4af37); }
+  .rank-sugoisugiru { background-image: linear-gradient(90deg, #5b1f8a, #c9a6ee, #e59be0); }
+  .rank-yabai {
+    background-image: linear-gradient(90deg, #ff3b3b, #ff9a2e, #ffe83b, #3fd45a, #3b8cff, #a24bff);
+  }
+}
+
+.card-word.hidden, .card-rank.hidden { visibility: hidden; }
+
+/* 逆位置の注記：別の行・小さい文字。正位置でも高さを確保して枠の大きさを変えない */
+.reverse-note {
+  display: block;
+  font-size: 0.8rem;
+  min-height: 1.2em;
+}
+
+#title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  text-wrap: balance; /* 各行の長さをそろえ、最終行に1〜2文字だけ残らないようにする */
+  line-break: strict; /* 閉じカッコ「」」を行頭に置かない */
+}
+
+.heading {
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+/* 名前は称号(1.6rem)の約1.7倍・太字・中央揃え。色だけ明るい金色 */
+#owner {
+  font-size: 2.7rem;
+  font-weight: bold;
+  text-align: center;
+  color: #f5d76e;
+  margin-top: 0.3rem;
+}
+
+/* 称号の単語：span の中では折り返さない（折り返すのは span の間だけ） */
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* 「さん」は他の文字と同じ金色で、名前の約0.8倍 */
+.san {
+  color: var(--gold);
+  font-size: 0.8em;
+}
+
+#cheer { font-size: 1.1rem; }
+
+#reversed-line, #rank-line { font-size: 1rem; }
+
+#prob { font-size: 0.9rem; }

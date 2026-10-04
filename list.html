@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>カード説明の一覧 - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" href="index.html">ホームへ</a>
+    <h2>カード説明の一覧</h2>
+
+    <!-- 22枚のカード名のリンクボタン（番号順）。押すと card.html?no=番号 へ -->
+    <div id="list-buttons"></div>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const box = document.getElementById("list-buttons");
+    [...CARDS].sort((a, b) => a.no - b.no).forEach(card => {
+      const link = document.createElement("a");
+      link.className = "btn";
+      link.href = "card.html?no=" + card.no;
+      link.textContent = card.name;
+      box.append(link);
+    });
+  </script>
+</body>
+</html>

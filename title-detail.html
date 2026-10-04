@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>今日の称号 くわしく - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" href="index.html">ホームへ</a>
+
+    <!-- 3枚のカード（過去・現在・未来、名前と逆位置、その枠の単語とランク名） -->
+    <div class="cards">
+      <div class="card"><span class="slot">過去</span><span class="card-name"></span><span class="reverse-note"></span><span class="card-word"></span><span class="card-rank"></span></div>
+      <div class="card"><span class="slot">現在</span><span class="card-name"></span><span class="reverse-note"></span><span class="card-word"></span><span class="card-rank"></span></div>
+      <div class="card"><span class="slot">未来</span><span class="card-name"></span><span class="reverse-note"></span><span class="card-word"></span><span class="card-rank"></span></div>
+    </div>
+
+    <p id="reversed-line"></p>
+    <p id="rank-line"></p>
+    <p id="prob"><span id="prob-frac"></span> <small id="prob-pct"></small></p>
+    <p><small id="prob-note"></small></p>
+
+    <div class="menu">
+      <a class="btn" href="title-result.html">戻る</a>
+    </div>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const result = loadTitleResult();
+    if (!result) {
+      // 結果がないときは引く画面に戻す
+      location.replace("title.html");
+    } else {
+      const names = document.querySelectorAll(".card-name");
+      const notes = document.querySelectorAll(".reverse-note");
+      const wordEls = document.querySelectorAll(".card-word");
+      const rankEls = document.querySelectorAll(".card-rank");
+      // ランク名ごとに色を変えるCSSクラス
+      const RANK_CLASS = {
+        "すごい": "rank-sugoi",
+        "かなりすごい": "rank-kanari",
+        "すごいすぎる": "rank-sugoisugiru",
+        "ヤバイすぎる": "rank-yabai",
+      };
+      result.cards.forEach((c, i) => {
+        names[i].textContent = CARDS.find(card => card.no === c.no).name;
+        notes[i].textContent = c.reversed ? "逆位置" : "";
+        wordEls[i].textContent = result.words[i];
+        rankEls[i].textContent = result.ranks[i];
+        rankEls[i].classList.add(RANK_CLASS[result.ranks[i]]);
+      });
+
+      // 逆位置の枚数(0〜3)に応じた一言
+      const count = result.cards.filter(c => c.reversed).length;
+      document.getElementById("reversed-line").textContent = REVERSED_LINES[count];
+
+      // 3つの単語のうち一番高いランクの一言。重みが小さいほど高いランク（ヤバイすぎる > すごいすぎる > かなりすごい > すごい）
+      const top = result.ranks.reduce((best, r) => (RARITY[r] < RARITY[best] ? r : best));
+      // 文の中のランク名だけを、色付きの span で包む（「」は色を付けず残す）。
+      // 重なる名前（すごい / すごいすぎる）は、長い名前を先に並べて間違って包まないようにする
+      const rankNames = Object.keys(RANK_CLASS).sort((a, b) => b.length - a.length);
+      const pattern = new RegExp("(" + rankNames.join("|") + ")");
+      const pieces = RARITY_LINES[top].split(pattern).map(part => {
+        if (!RANK_CLASS[part]) return part;
+        const span = document.createElement("span");
+        span.className = "rank-name " + RANK_CLASS[part];
+        span.textContent = part;
+        return span;
+      });
+      document.getElementById("rank-line").replaceChildren(...pieces);
+
+      const probability = calcProbability(result.probs);
+      const denomText = formatDenominator(probability);
+      document.getElementById("prob-frac").textContent =
+        "この組み合わせの出現確率：約" + denomText + "分の1";
+      document.getElementById("prob-pct").textContent = "（" + formatPercent(probability) + "）";
+      document.getElementById("prob-note").textContent =
+        "同じ称号が出るには、平均で約" + denomText + "回引く必要があります";
+    }
+  </script>
+</body>
+</html>

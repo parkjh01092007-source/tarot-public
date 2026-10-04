@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>今日の称号 - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" href="index.html">ホームへ</a>
+
+    <section id="result">
+      <p class="heading">本日の称号</p>
+      <p id="title"></p>
+      <p id="owner"></p>
+      <p id="cheer"></p>
+    </section>
+
+    <div class="menu">
+      <a class="btn" href="title-detail.html">くわしく見る</a>
+      <a class="btn" href="title.html">もう一度引く</a>
+    </div>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    const result = loadTitleResult();
+    if (!result) {
+      // 結果がないときは引く画面に戻す
+      location.replace("title.html");
+    } else {
+      // 3つの単語を別々の span に入れる（折り返しは span の間だけ）。「」」は最初・最後の span に含める
+      const words = result.words;
+      const parts = words.map((w, i) => {
+        const span = document.createElement("span");
+        span.className = "word";
+        span.textContent = (i === 0 ? "「" : "") + w + (i === words.length - 1 ? "」" : "");
+        return span;
+      });
+      document.getElementById("title").replaceChildren(...parts);
+
+      // 名前（“名前” さん）。「さん」だけ別の span にして小さく暗めの金色にする
+      const name = getName();
+      const san = document.createElement("span");
+      san.className = "san";
+      san.textContent = "さん";
+      document.getElementById("owner").replaceChildren("“" + name + "” ", san);
+
+      // はやし立て：引いたときに選んだ TEMPLATES の1つ。{title}と{name}を置き換える
+      document.getElementById("cheer").textContent = TEMPLATES[result.templateIndex]
+        .replaceAll("{title}", words.join(""))
+        .replaceAll("{name}", name);
+    }
+  </script>
+</body>
+</html>

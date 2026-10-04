@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>カードの説明 - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" href="list.html">戻る</a>
+    <h2 id="card-title"></h2>
+
+    <!-- テーマ切り替え：選んでいるテーマは金色で塗る。MEANINGS に無いテーマは「準備中」で押せない -->
+    <div class="theme-buttons" id="themes"></div>
+
+    <h3>正位置</h3>
+    <p class="meaning" id="upright"></p>
+    <h3>逆位置</h3>
+    <p class="meaning" id="reversed"></p>
+
+    <div class="menu">
+      <a class="btn" id="words-link">称号の単語を見る</a>
+    </div>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    // URL の no からカードを決める。無い・0〜21以外（数字でない値も含む）のときは一覧に戻す
+    const params = new URLSearchParams(location.search);
+    const noParam = params.get("no");
+    const card = /^\d+$/.test(noParam || "") ? CARDS.find(c => c.no === Number(noParam)) : undefined;
+    if (!card) {
+      location.replace("list.html");
+    } else {
+      // テーマは URL の theme。無い・MEANINGS に無いときは general
+      const theme = hasTheme(params.get("theme")) ? params.get("theme") : "general";
+      const THEMES = [
+        { key: "general", label: "総合" },
+        { key: "love", label: "恋愛" },
+        { key: "work", label: "仕事" },
+      ];
+
+      document.getElementById("card-title").textContent = card.name;
+      const box = document.getElementById("themes");
+      THEMES.forEach(t => {
+        if (hasTheme(t.key)) {
+          // 同じカードのまま、テーマだけ切り替える
+          const link = document.createElement("a");
+          link.className = "btn" + (t.key === theme ? " selected" : "");
+          link.href = "card.html?no=" + card.no + "&theme=" + t.key;
+          link.textContent = t.label;
+          box.append(link);
+        } else {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.disabled = true;
+          btn.textContent = t.label + "（準備中）";
+          box.append(btn);
+        }
+      });
+
+      // そのテーマの文章（そのカードの分がまだ無いときは「準備中」）
+      const meaning = MEANINGS[theme][card.no];
+      document.getElementById("upright").textContent = meaning ? meaning.upright : "準備中";
+      document.getElementById("reversed").textContent = meaning ? meaning.reversed : "準備中";
+
+      // 単語はテーマに関係しない。戻ったときに同じテーマで開けるよう、テーマだけ引き継ぐ
+      document.getElementById("words-link").href = "card-words.html?no=" + card.no + "&theme=" + theme;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>なんかタロットっぽいやつ</h1>
+
+    <!-- 名前入力欄（入力のたびに保存し、全ページで共有。空欄なら「本人ちゃん」） -->
+    <label for="name">お名前</label>
+    <input id="name" type="text" placeholder="本人ちゃん">
+    <div class="menu">
+      <a class="btn" href="title.html">今日の称号</a>
+      <a class="btn" href="reading.html">タロット占い</a>
+      <a class="btn" href="list.html">カード説明の一覧</a>
+    </div>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    // 保存済みの名前を入力欄に入れ、入力のたびに保存する
+    const nameInput = document.getElementById("name");
+    nameInput.value = loadName();
+    nameInput.addEventListener("input", () => saveName(nameInput.value));
+  </script>
+</body>
+</html>

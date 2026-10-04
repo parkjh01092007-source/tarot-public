@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>カードの称号の単語 - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" id="back-link">戻る</a>
+    <h2 id="card-title"></h2>
+
+    <div id="words"></div>
+
+    <!-- 色の凡例：各行をそのランクの色で表示する -->
+    <div id="legend"></div>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    // URL の no からカードを決める。無い・0〜21以外（数字でない値も含む）のときは一覧に戻す
+    const param = new URLSearchParams(location.search).get("no");
+    const card = /^\d+$/.test(param || "") ? CARDS.find(c => c.no === Number(param)) : undefined;
+    if (!card) {
+      location.replace("list.html");
+    } else {
+      document.getElementById("card-title").textContent = card.name;
+      // 戻るときは、見ていたテーマを引き継ぐ（無い・MEANINGS に無いときは総合）
+      const theme = hasTheme(new URLSearchParams(location.search).get("theme"))
+        ? new URLSearchParams(location.search).get("theme") : "general";
+      document.getElementById("back-link").href = "card.html?no=" + card.no + "&theme=" + theme;
+      // ランク名ごとに色を変えるCSSクラス（title.html などと同じもの）
+      const RANK_CLASS = {
+        "すごい": "rank-sugoi",
+        "かなりすごい": "rank-kanari",
+        "すごいすぎる": "rank-sugoisugiru",
+        "ヤバイすぎる": "rank-yabai",
+      };
+      // ランクが低い順（重みが大きい順）：すごい → かなりすごい → すごいすぎる → ヤバイすぎる
+      const rankOrder = Object.keys(RANK_CLASS).sort((a, b) => RARITY[b] - RARITY[a]);
+
+      // 称号の単語：枠ごとに小見出しと単語を入れる。単語はそのランクの色で、ランク名は出さない
+      const box = document.getElementById("words");
+      [["過去の単語", card.past], ["現在の単語", card.present], ["未来の単語", card.future]]
+        .forEach(([label, words]) => {
+          const frame = document.createElement("section");
+          frame.className = "word-box";
+          const h = document.createElement("h3");
+          h.textContent = label;
+          frame.append(h);
+          [...words]
+            .sort((a, b) => rankOrder.indexOf(a.r) - rankOrder.indexOf(b.r))
+            .forEach(x => {
+              const p = document.createElement("p");
+              p.className = "word-item " + RANK_CLASS[x.r];
+              p.textContent = x.w;
+              frame.append(p);
+            });
+          box.append(frame);
+        });
+
+      // 凡例：4行、各行をそのランクの色でランク名を表示
+      const legend = document.getElementById("legend");
+      rankOrder.forEach(name => {
+        const p = document.createElement("p");
+        p.className = "legend-item " + RANK_CLASS[name];
+        p.textContent = name;
+        legend.append(p);
+      });
+    }
+  </script>
+</body>
+</html>

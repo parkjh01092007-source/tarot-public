@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>今日の称号 - なんかタロットっぽいやつ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <a class="btn home-btn" href="index.html">ホームへ</a>
+    <h2>今日の称号</h2>
+
+    <!-- 伏せたカード：裏面は文字と金枠だけ。ボタンで1枚ずつ表にする -->
+    <div class="cards">
+      <div class="card"><span class="slot">過去</span><span class="card-name">？</span><span class="reverse-note"></span><span class="card-word hidden"></span><span class="card-rank hidden"></span></div>
+      <div class="card"><span class="slot">現在</span><span class="card-name">？</span><span class="reverse-note"></span><span class="card-word hidden"></span><span class="card-rank hidden"></span></div>
+      <div class="card"><span class="slot">未来</span><span class="card-name">？</span><span class="reverse-note"></span><span class="card-word hidden"></span><span class="card-rank hidden"></span></div>
+    </div>
+    <button id="draw" type="button">過去を引く</button>
+    <p id="error"></p>
+
+    <p class="footer"><small>娯楽用です</small></p>
+  </main>
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    // 22枚から重複なしで3枚を選ぶ（Fisher-Yates）。各カード50%で逆位置
+    function pickCards(n) {
+      const deck = [...CARDS];
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      return deck.slice(0, n).map(card => ({ card, reversed: Math.random() < 0.5 }));
+    }
+
+    // ページを開いたときに、3枚の組・向き・各枠の単語・はやし立てを全部決めておく。ボタンは見せるだけ
+    const picked = pickCards(3);
+    const chosen = [
+      pickWord(picked[0].card.past),
+      pickWord(picked[1].card.present),
+      pickWord(picked[2].card.future),
+    ];
+    const result = {
+      cards: picked.map(p => ({ no: p.card.no, reversed: p.reversed })),
+      words: chosen.map(c => c.w),
+      ranks: chosen.map(c => c.r),
+      probs: chosen.map(c => c.p),
+      templateIndex: Math.floor(Math.random() * TEMPLATES.length),
+    };
+
+    const labels = ["過去を引く", "現在を引く", "未来を引く", "結果を見る"];
+    const names = document.querySelectorAll(".card-name");
+    const notes = document.querySelectorAll(".reverse-note");
+    const wordEls = document.querySelectorAll(".card-word");
+    // 単語は最初から入れておき、見えないまま高さだけ確保する（めくっても枠の高さが変わらない）
+    const rankEls = document.querySelectorAll(".card-rank");
+    wordEls.forEach((el, i) => { el.textContent = result.words[i]; });
+    // ランク名ごとに色を変えるCSSクラス（見えるのはめくったあと）
+    const RANK_CLASS = {
+      "すごい": "rank-sugoi",
+      "かなりすごい": "rank-kanari",
+      "すごいすぎる": "rank-sugoisugiru",
+      "ヤバイすぎる": "rank-yabai",
+    };
+    rankEls.forEach((el, i) => {
+      el.textContent = result.ranks[i];
+      el.classList.add(RANK_CLASS[result.ranks[i]]);
+    });
+    const button = document.getElementById("draw");
+    let opened = 0; // めくった枚数
+
+    button.addEventListener("click", () => {
+      if (opened < 3) {
+        // 次のカードをめくる（カード名と、逆位置のときだけ「逆位置」）
+        names[opened].textContent = picked[opened].card.name;
+        notes[opened].textContent = picked[opened].reversed ? "逆位置" : "";
+        wordEls[opened].classList.remove("hidden");
+        rankEls[opened].classList.remove("hidden");
+        opened++;
+        button.textContent = labels[opened];
+      } else if (saveTitleResult(result)) {
+        // 「結果を見る」を押したときに結果を保存して移動する
+        location.href = "title-result.html";
+      } else {
+        document.getElementById("error").textContent = "結果を保存できませんでした。";
+      }
+    });
+  </script>
+</body>
+</html>
